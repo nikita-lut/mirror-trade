@@ -64,6 +64,7 @@ exports.coinbaseLogin = (req, res) => {
     "wallet:user:read,wallet:accounts:read,wallet:buys:create,wallet:buys:read,wallet:sells:create,wallet:sells:read,wallet:trades:read,wallet:trades:create,wallet:transactions:read,wallet:transactions:send";
 
   const coinbaseAuthUrl = `https://www.coinbase.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+  console.log(coinbaseAuthUrl);
   res.redirect(coinbaseAuthUrl);
 };
 
