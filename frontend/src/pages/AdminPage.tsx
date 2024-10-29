@@ -259,7 +259,8 @@ const AdminDashboard: React.FC = () => {
               {holdings.map((holding) => (
                 <tr className="bg-white" key={holding.coin}>
                   <td className="px-6 py-4">
-                    {holding.coin}({JSON.parse(allocations)[holding.coin]}%)
+                    {holding.coin}({JSON.parse(allocations || "")[holding.coin]}
+                    %)
                   </td>
                   <td className="px-6 py-4">
                     {Number(Number(holding.amount).toFixed(6))}
