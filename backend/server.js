@@ -12,7 +12,7 @@ require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 443;
-const HOST = process.env.HOST || "http://127.0.0.1";
+const HOST = process.env.HOST || "mirror-trade.onrender.com";
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
