@@ -29,9 +29,9 @@ app.use("/api/user", userRoutes);
 app.use(express.static(path.join(__dirname, "build")));
 
 // Catch-all handler for any request that doesn't match the existing routes
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 // Start the server
 app.listen(PORT, () => {
