@@ -1,6 +1,6 @@
 import React from "react";
 
-const API_URL = "http://localhost:5000/api"; // Update with your backend API URL
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const LoginWithCoinbase: React.FC = () => {
   const handleLogin = () => {
