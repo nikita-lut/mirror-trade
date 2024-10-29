@@ -161,7 +161,7 @@ exports.coinbaseCallback = async (req, res) => {
     user.coinbaseRefreshToken = refresh_token;
     user.save();
   } catch (error) {
-    console.error("Coinbase Callback Error:");
+    console.error("Coinbase Callback Error:", error);
     res.status(500).send("Authentication failed.");
   }
 };
