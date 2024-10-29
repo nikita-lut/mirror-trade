@@ -9,7 +9,7 @@ import svgrPlugin from "vite-plugin-svgr";
 export default defineConfig({
   server: {
     host: true,
-    port: 3000,
+    port: 8000,
     // proxy: {
     //   "/api": "Enter your backend host with port inside the quotes",
     // },
