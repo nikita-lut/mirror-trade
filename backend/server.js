@@ -7,7 +7,7 @@ const adminRoutes = require("./routes/admin");
 const userRoutes = require("./routes/userRoutes");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const path = require("path");
+// const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -26,12 +26,12 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
 
 // Serve static files from the React app build folder
-app.use(express.static(path.join(__dirname, "build")));
+// app.use(express.static(path.join(__dirname, "build")));
 
 // Catch-all handler for any request that doesn't match the existing routes
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 // Start the server
 app.listen(PORT, () => {

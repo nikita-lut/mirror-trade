@@ -1,22 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoginWithCoinbase from "../components/LoginWithCoinbase";
 
 const Login: React.FC = () => {
   // const { login } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
-  const { loginWithCoinbase, user } = useAuth();
-  const loc = useLocation();
-  const loginWithCB = useCallback(async (params: string) => {
-    const success = await loginWithCoinbase(params).catch(console.log);
-    if (success) {
-      navigate("/");
-    }
-  }, []);
-  const init = useRef(true);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
@@ -26,17 +18,6 @@ const Login: React.FC = () => {
       window.location.href = "/"; // Redirect to the dashboard or home
     }
   }, []);
-  useEffect(() => {
-    if (init.current) {
-      init.current = false;
-      return; // Skip the first effect run
-    }
-
-    if (loc.search) {
-      loginWithCB(loc.search);
-    }
-    return () => {};
-  }, [loc, loginWithCB]);
   return (
     <div className="container mx-auto">
       <h1 className="text-3xl font-bold">Login</h1>
