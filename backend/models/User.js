@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   fund: { type: Number, default: 0 },
   totalFund: { type: Number, default: 0 },
   allocations: { type: Object, default: {} },
+  increments: { type: Object, default: {} },
 });
 
 // Hash the password before saving

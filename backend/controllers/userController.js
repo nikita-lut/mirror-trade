@@ -15,7 +15,10 @@ const getUserDashboard = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
     const coins = Object.keys(user.allocations) || [];
     const _prices = coins.map(async (coin) => {
-      const price = await getMarketPrice(`${coin}-USDC`, user.coinbaseToken);
+      const { price } = await getMarketPrice(
+        `${coin}-USDC`,
+        user.coinbaseToken
+      );
       return {
         [coin]: price,
       };

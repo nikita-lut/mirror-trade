@@ -14,9 +14,13 @@ async function getMarketPrice(productID, token) {
       }
     );
     const marketPrice = product.data.price; // Current market price
-    return Number(marketPrice);
+    // console.log(product.data);
+    return {
+      price: Number(marketPrice),
+      increment: product.data.base_increment,
+    };
   } catch (error) {
-    console.error("Error fetching market price:", error);
+    console.error("Error fetching market price:");
     return null;
   }
 }
@@ -90,15 +94,18 @@ const getDashboardData = async (req, res) => {
 
     const coins = Object.keys(cUser.allocations) || [];
     const _prices = coins.map(async (coin) => {
-      const price = await getMarketPrice(`${coin}-USDC`, cUser.coinbaseToken);
+      const { price } = await getMarketPrice(
+        `${coin}-USDC`,
+        cUser.coinbaseToken
+      );
       return {
         [coin]: price,
       };
     });
     const prices = await Promise.all(_prices);
+    const marketPrices = Object.assign({}, ...prices);
 
     const userStats = users.map((user) => {
-      const marketPrices = Object.assign({}, ...prices);
       const holdings = getUserProfitLoss(user.holdings || [], marketPrices);
       const totalProfitLoss = holdings.reduce(
         (acc, holding) => acc + holding.profitLoss,
@@ -255,10 +262,24 @@ const allocateCoins = async (req, res) => {
     const mainAccount = req.user;
     if (!mainAccount)
       return res.status(404).json({ message: "Main Account not found" });
-    mainAccount.allocations = allocations; // Save allocations
+
+    const coins = Object.keys(allocations) || [];
+    const _incs = coins.map(async (coin) => {
+      const { increment } = await getMarketPrice(
+        `${coin}-USDC`,
+        mainAccount.coinbaseToken
+      );
+      return {
+        [coin]: increment,
+      };
+    });
+    const incs = await Promise.all(_incs);
+
+    mainAccount.increments = Object.assign({}, ...incs); // Save increments
+    mainAccount.allocations = allocations;
+
     await mainAccount.save();
 
-    console.log("saved", allocations);
     res.status(200).json({ message: "Allocations updated successfully" });
   } catch (err) {
     res
@@ -329,6 +350,19 @@ const rebalanceFunds = async (req, res) => {
       }
     });
     user.holdings = holdings;
+    const coins = Object.keys(allocations) || [];
+    const _incs = coins.map(async (coin) => {
+      const { increment } = await getMarketPrice(
+        `${coin}-USDC`,
+        user.coinbaseToken
+      );
+      return {
+        [coin]: increment,
+      };
+    });
+    const incs = await Promise.all(_incs);
+
+    user.increments = Object.assign({}, ...incs); // Save increments
     await user.save();
 
     res.status(200).json({ message: "Funds rebalanced successfully" });
@@ -355,10 +389,11 @@ async function sellAllCoins(user) {
 
     return acc;
   }, []);
-  const factor = Math.pow(10, 8);
+  const increments = user.increments;
   const order_ids = [];
   for (const holding of holdings) {
     if (!holding.coin) continue;
+    const factor = 1 / Number(increments[holding.coin]);
     const result = await executeTrade(
       holding.coin,
       -Math.floor(holding.amount * factor) / factor,
