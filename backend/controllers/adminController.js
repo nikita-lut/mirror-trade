@@ -92,7 +92,7 @@ const getDashboardData = async (req, res) => {
     const users = await User.find({ mainAccount: req.user.username });
     const userCount = users.length;
 
-    const coins = Object.keys(cUser.allocations) || [];
+    const coins = Object.keys(cUser.increments) || [];
     const _prices = coins.map(async (coin) => {
       const { price } = await getMarketPrice(
         `${coin}-USDC`,
@@ -275,7 +275,11 @@ const allocateCoins = async (req, res) => {
     });
     const incs = await Promise.all(_incs);
 
-    mainAccount.increments = Object.assign({}, ...incs); // Save increments
+    mainAccount.increments = Object.assign(
+      {},
+      ...mainAccount.increments,
+      ...incs
+    ); // Save increments
     mainAccount.allocations = allocations;
 
     await mainAccount.save();
@@ -362,7 +366,7 @@ const rebalanceFunds = async (req, res) => {
     });
     const incs = await Promise.all(_incs);
 
-    user.increments = Object.assign({}, ...incs); // Save increments
+    user.increments = Object.assign({}, ...user.increments, ...incs); // Save increments
     await user.save();
 
     res.status(200).json({ message: "Funds rebalanced successfully" });

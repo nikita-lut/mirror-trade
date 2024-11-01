@@ -13,7 +13,7 @@ const AdminDashboard: React.FC = () => {
   const [userProfitLoss, setUserProfitLoss] = useState<number>(0);
 
   const [holdings, setHoldings] = useState<any[]>([]);
-  const [totalProfitLoss, setTotalProfitLoss] = useState(0);
+  const [totalProfitLoss, setTotalProfitLoss] = useState<number>(0);
   const [usdcBalance, setUsdcBalance] = useState(0);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
@@ -27,7 +27,7 @@ const AdminDashboard: React.FC = () => {
         },
       });
       setUserCount(response.data.userCount);
-      setTotalProfitLoss(response.data.totalProfitLoss);
+      setTotalProfitLoss(response.data.totalProfitLoss || 0);
       setUserStats(response.data.userStats);
       setAllocations(JSON.stringify(response.data.stat.allocations));
     } catch (error) {
@@ -193,7 +193,7 @@ const AdminDashboard: React.FC = () => {
                         {Number(Number(user.usdcBalance).toFixed(4))}
                       </td>
                       <td className="px-6 py-4">
-                        ${Number(user.profitLoss.toFixed(4))}
+                        ${Number((user.profitLoss || 0).toFixed(4))}
                       </td>
                     </tr>
                   ))}
